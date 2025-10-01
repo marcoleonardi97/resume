@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Marco Leonardi | Astrophysics & Business</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #0f172a;
+            --dark-alt: #1e293b;
+            --light: #f8fafc;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        #menu {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 1rem 0;
+            gap: 2rem;
+        }
+
+        #menu li a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        #menu li a:hover {
+            color: var(--accent);
+        }
+
+        #menu li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        #menu li a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile menu */
+        #mobile-menu-open {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #mobile-menu-close {
+            display: none;
+        }
+
+        /* Hero Section */
+        #lead {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-alt) 100%);
+            overflow: hidden;
+        }
+
+        #lead::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        #lead-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        #lead-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        #lead-content h2 {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-rounded-white {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: transparent;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn-rounded-white:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        #lead-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        #lead-down i {
+            font-size: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* About */
+        #about {
+            background: var(--dark-alt);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        .about-text strong {
+            color: var(--text);
+        }
+
+        /* Experience */
+        #experience {
+            background: var(--dark);
+        }
+
+        .experience-item {
+            background: var(--dark-alt);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .experience-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .experience-title h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .experience-title h4 {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .experience-date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .experience-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .experience-item ul li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .experience-item ul li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Education */
+        #education {
+            background: var(--dark-alt);
+        }
+
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .education-card {
+            background: var(--dark);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .education-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .education-card h4 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .education-date {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Skills */
+        #skills {
+            background: var(--dark);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: var(--dark-alt);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .skill-category h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-tag {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Contact */
+        #contact {
+            background: var(--dark-alt);
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .contact-item a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #menu {
+                display: none;
+            }
+
+            #mobile-menu-open {
+                display: flex;
+            }
+
+            #lead-content h1 {
+                font-size: 2.5rem;
+            }
+
+            #lead-content h2 {
+                font-size: 1.2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mobile-menu-open">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+
+    <header>
+        <ul id="menu">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </header>
+
+    <div id="lead">
+        <div id="lead-content">
+            <h1>Marco Leonardi</h1>
+            <h2>Astrophysics & Business • Bridging Science and Strategy</h2>
+            <a href="https://drive.usercontent.google.com/u/0/uc?id=1nIjZxC3yjpX_oanrbJ6gtaZeiNtZxD-p&export=download" class="btn-rounded-white">Download CV</a>
+        </div>
+        <div id="lead-down">
+            <span><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+        </div>
+    </div>
+
+    <section id="about">
+        <div class="container">
+            <div class="about-content">
+                <div>
+                    <h2 class="section-heading">About Me</h2>
+                </div>
+                <div class="about-text">
+                    <p>
+                        I'm an <strong>MSc Astronomy and Business student at Leiden University</strong>, combining my passion for astrophysics with strategic business thinking. My unique background spans computational astrophysics, galaxy simulations, and international business development.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        Currently researching galaxy rotation curves and contributing to the <strong>Synthesizer project</strong>, I specialize in transforming complex scientific data into actionable insights. With experience in both research and business environments, I'm passionate about applying quantitative and analytical skills to the space sector.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-heading">Experience</h2>
+            
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Teaching Assistant</h3>
+                        <h4>Leiden University • Leiden, Netherlands</h4>
+                    </div>
+                    <div class="experience-date">Sep 2025 - Present</div>
+                </div>
+                <ul>
+                    <li>Building a new course "Exploring the Universe" for non-physics bachelor students</li>
+                    <li>Covering lectures and problem sets for general astronomy</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Research: The Galactic Waltz</h3>
+                        <h4>Leiden University • Leiden, Netherlands</h4>
+                    </div>
+                    <div class="experience-date">Sep 2024 - Aug 2025</div>
+                </div>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                    Bridging the gap between observed and simulated galaxy rotation curves
+                </p>
+                <ul>
+                    <li>Contributed (C/C++) to the Synthesizer project, a Python package designed to transform theoretical galaxy models into synthetic observables</li>
+                    <li>Forward modelling and analysis of simulated rotation curves from the EAGLE simulations dataset</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Sales and After-Sales</h3>
+                        <h4>iSi GmbH • Darmstadt, Germany</h4>
+                    </div>
+                    <div class="experience-date">Jul 2019 - Dec 2019</div>
+                </div>
+                <ul>
+                    <li>Effectively managed sales for all UK customers and part of the Italian market</li>
+                    <li>Redesigned the quotations and discount system in Google Spreadsheets and Excel</li>
+                    <li>Analysed future expansion possibilities into more European markets</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Communication & SEO</h3>
+                        <h4>AWM Network • Copenhagen, Denmark</h4>
+                    </div>
+                    <div class="experience-date">Jan 2018 - Jun 2018</div>
+                </div>
+                <ul>
+                    <li>Created SEO targeted content for UK websites and blogs in HTML and CSS</li>
+                    <li>Conducted SEO and backlink analysis for the website and competitors</li>
+                    <li>Email marketing and mass outreach with Mail-Merge and Hunter</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <div class="container">
+            <h2 class="section-heading">Education</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <h3>University of Leiden</h3>
+                    <div class="education-date">Aug 2024 - Present</div>
+                    <h4>MSc Astronomy and Business Studies</h4>
+                    <p style="color: var(--text-muted);">
+                        Thesis: Bridging the gap between observed and simulated galaxy rotation curves
+                    </p>
+                </div>
+
+                <div class="education-card">
+                    <h3>University of Bologna</h3>
+                    <div class="education-date">Sep 2020 - Jul 2024</div>
+                    <h4>BSc Astronomy</h4>
+                    <p style="color: var(--text-muted);">
+                        Thesis: Bremsstrahlung emission in galaxy clusters
+                    </p>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">
+                        Exchange Year (2021-22) at Aix-Marseille University, France
+                    </p>
+                </div>
+
+                <div class="education-card">
+                    <h3>Copenhagen Business Academy</h3>
+                    <div class="education-date">Aug 2016 - Jan 2020</div>
+                    <h4>BA International Sales and Marketing Management</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-heading">Skills & Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fas fa-code"></i> Programming</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">C/C++</span>
+                        <span class="skill-tag">Fortran90</span>
+                        <span class="skill-tag">R</span>
+                        <span class="skill-tag">LaTeX</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">GitHub</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-satellite"></i> Astrophysics Tools</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AMUSE</span>
+                        <span class="skill-tag">Synthesizer</span>
+                        <span class="skill-tag">TOPCAT</span>
+                        <span class="skill-tag">Galaxy Simulations</span>
+                        <span class="skill-tag">Data Analysis</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-chart-line"></i> Business Skills</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Market Analysis</span>
+                        <span class="skill-tag">Marketing Planning</span>
+                        <span class="skill-tag">Financial Assessment</span>
+                        <span class="skill-tag">SEO</span>
+                        <span class="skill-tag">Excel</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-language"></i> Languages</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Italian (Native)</span>
+                        <span class="skill-tag">English (Native)</span>
+                        <span class="skill-tag">Spanish</span>
+                        <span class="skill-tag">French</span>
+                        <span class="skill-tag">Portuguese</span>
+                        <span class="skill-tag">Danish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-heading">Get In Touch</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">
+                I'm always open to discussing new opportunities, collaborations, or just chatting about astrophysics and the space sector.
+            </p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:m.leonardi.2@umail.leidenuniv.nl">m.leonardi.2@umail.leidenuniv.nl</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Leiden, Netherlands</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://github.com/marcoleonardi97" target="_blank" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <p class="copyright">
+                © <span id="current-year">2025</span> Marco Leonardi. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Update copyright year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.experience-item, .education-card, .skill-category').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+
+</html>
