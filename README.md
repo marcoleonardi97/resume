@@ -15,7 +15,7 @@ A modern, space-themed portfolio website showcasing my work at the intersection 
 
 ## 🚀 Live 
 
-Visit the live site: [marcoleonardi97.github.io/hello](https://marcoleonardi97.github.io/hello/)
+Visit the live site: [marcoleonardi97.github.io/hello](https://marcoleonardi97.github.io/resume/)
 
 
 ### Colors
