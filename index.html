@@ -6,13 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Marco Leonardi | Astrophysics & Business</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✯</text></svg>">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    /*    
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon"> after line 9 original*/
         * {
             margin: 0;
             padding: 0;
@@ -375,9 +373,112 @@
             margin-bottom: 1rem;
         }
 
+        /* Projects */
+        #projects {
+            background: var(--dark);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--dark-alt);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            min-width: 40px;
+        }
+
+        .project-title {
+            flex: 1;
+        }
+
+        .project-card h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-tag {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .project-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            border-radius: 25px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .project-link:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .project-link i {
+            font-size: 1rem;
+        }
+
         /* Skills */
         #skills {
-            background: var(--dark);
+            background: var(--dark-alt);
         }
 
         .skills-grid {
@@ -528,6 +629,7 @@
             <li><a href="#about">About</a></li>
             <li><a href="#experience">Experience</a></li>
             <li><a href="#education">Education</a></li>
+            <li><a href="#projects">Projects</a></li>
             <li><a href="#skills">Skills</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -663,6 +765,159 @@
         </div>
     </section>
 
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-heading">Projects & Research</h2>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-galaxy"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Galaxy Rotation Curves</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">C/C++</span>
+                                <span class="project-tag">EAGLE</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Forward modelling and analysis of simulated galaxy rotation curves from the EAGLE simulations. Contributed to the Synthesizer project to bridge observed and theoretical models.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Exoplanet Light Curve Analysis</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">GUI</span>
+                                <span class="project-tag">Data Analysis</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Interactive light curve analysis tool with exoplanet surface temperature simulator and full GUI. Detected HD189733b via changes in star's radial velocity.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Milky Way Spiral Arms</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">HI Clouds</span>
+                                <span class="project-tag">Mapping</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Mapping spiral arms of the Milky Way using neutral hydrogen (HI) clouds. Analyzed radio telescope data to visualize galactic structure.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-explosion"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Supernovae in Binary Systems</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">AMUSE</span>
+                                <span class="project-tag">Simulation</span>
+                                <span class="project-tag">Python</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Simulated effects of supernovae explosions on protoplanetary disks in binary star systems using the AMUSE framework for astrophysical simulations.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Hubble Constant Estimation</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">R</span>
+                                <span class="project-tag">Cosmology</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Statistical analysis to estimate Hubble's constant from samples of Type Ia supernovae and receding galaxies. Implemented in both Python and R.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="project-title">
+                            <h3>Plasma Cooling Simulation</h3>
+                            <div class="project-tags">
+                                <span class="project-tag">Fortran90</span>
+                                <span class="project-tag">Simulation</span>
+                                <span class="project-tag">Physics</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Radiative cooling simulation of a collisional H-He plasma. Modeled thermal evolution and energy loss mechanisms in high-temperature environments.
+                    </p>
+                    <div class="project-links">
+                        <a href="https://github.com/marcoleonardi97" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <section id="skills">
         <div class="container">
             <h2 class="section-heading">Skills & Expertise</h2>
@@ -706,7 +961,7 @@
                     <h3><i class="fas fa-language"></i> Languages</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Italian (Native)</span>
-                        <span class="skill-tag">English Native</span>
+                        <span class="skill-tag">English </span>
                         <span class="skill-tag">Spanish</span>
                         <span class="skill-tag">French</span>
                         <span class="skill-tag">Portuguese</span>
@@ -746,8 +1001,8 @@
                 <a href="https://www.linkedin.com/in/marco-leonardi13/" target="_blank" aria-label="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="https://orcid.org/0000-0002-2771-9344" aria-label="View ORCID record">
-                    <img src="/ORCID-iD_icon-vector.svg" alt="ORCID iD"/> 0000-0002-2771-9344
+                <a href="https://orcid.org/0009-0008-3592-7830"> 
+                    <img src="/ORCID-iD_icon-vector.svg" alt="ORCID Logo"/>
                 </a>
             </div>
             <p class="copyright">
