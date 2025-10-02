@@ -1083,6 +1083,12 @@
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
         });
+        
+        // Style switcher
+        document.getElementById('style-switcher').addEventListener('change', function(e) {
+            window.location.href = e.target.value;
+        });
+        
     </script>
 </body>
 
