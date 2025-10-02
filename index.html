@@ -90,6 +90,29 @@
         #menu li a:hover::after {
             width: 100%;
         }
+        
+        /* Style Switcher */
+        .style-switcher-container {
+            text-align: center;
+            padding: 0.5rem 0;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        #style-switcher {
+            font-family: 'Inter', sans-serif;
+            padding: 0.5rem 1rem;
+            background: var(--dark-alt);
+            color: var(--text);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #style-switcher:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
 
         /* Mobile menu */
         #mobile-menu-open {
@@ -637,6 +660,12 @@
             <li><a href="#skills">Skills</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
+        <div class="style-switcher-container">
+            <select id="style-switcher">
+                <option value="index.html" selected>🎨 Classic Style</option>
+                <option value="y2k.html">✨ Y2K Cyber</option>
+            </select>
+        </div>
     </header>
 
     <div id="lead">
