@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marco Leonardi | Y2K Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Audiowide&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --orange: #E87511;
+            --burgundy: #8B0036;
+            --yellow: #F4DC7A;
+            --green: #4AAE4E;
+            --blue: #89B6C6;
+            --pink: #D45D9D;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            color: white;
+            overflow-x: hidden;
+            background: black;
+        }
+
+        /* VIDEO BACKGROUND CONTAINER - PUT YOUR VIDEO HERE */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* DVD Menu Navigation - Right Side */
+        #dvd-menu {
+            position: fixed;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .menu-item {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid transparent;
+            padding: 1.5rem 3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.5rem;
+            color: var(--blue);
+            text-decoration: none;
+            text-align: right;
+            font-family: 'Audiowide', cursive;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            border-right: 5px solid var(--orange);
+            position: relative;
+        }
+
+        .menu-item::before {
+            content: '▶';
+            position: absolute;
+            right: 1rem;
+            opacity: 0;
+            transition: all 0.3s;
+            color: var(--yellow);
+            font-size: 1.2rem;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: linear-gradient(90deg, transparent, rgba(232, 117, 17, 0.3));
+            border-right-color: var(--yellow);
+            color: var(--yellow);
+            padding-right: 4rem;
+        }
+
+        .menu-item:hover::before,
+        .menu-item.active::before {
+            opacity: 1;
+        }
+
+        .menu-item:nth-child(1) { border-right-color: var(--orange); }
+        .menu-item:nth-child(2) { border-right-color: var(--burgundy); }
+        .menu-item:nth-child(3) { border-right-color: var(--blue); }
+        .menu-item:nth-child(4) { border-right-color: var(--green); }
+        .menu-item:nth-child(5) { border-right-color: var(--yellow); }
+        .menu-item:nth-child(6) { border-right-color: var(--pink); }
+
+        /* Mobile Menu Toggle */
+        #mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 101;
+            background: var(--orange);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--orange);
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 10%;
+            position: relative;
+        }
+
+        .logo-container {
+            margin-bottom: 3rem;
+        }
+
+        #hero h1 {
+            font-family: 'Audiowide', cursive;
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--orange), var(--pink), var(--yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(232, 117, 17, 0.5);
+            animation: pulse 3s infinite;
+        }
+
+        #hero h2 {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-bottom: 3rem;
+            text-shadow: 0 0 20px var(--blue);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.02); filter: brightness(1.2); }
+        }
+
+        .dvd-button {
+            padding: 1.2rem 3.5rem;
+            background: linear-gradient(135deg, var(--orange), var(--burgundy));
+            border: 3px solid var(--yellow);
+            border-radius: 50px;
+            color: white;
+            font-family: 'Audiowide', cursive;
+            font-size: 1.3rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 30px var(--orange), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+
+        .dvd-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px var(--yellow);
+            border-color: var(--orange);
+        }
+
+        /* Content Sections */
+        section {
+            min-height: 100vh;
+            padding: 5rem 2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.85);
+            border: 4px solid;
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 0 60px;
+        }
+
+        #about .section-container {
+            border-color: var(--orange);
+            box-shadow: 0 0 60px var(--orange);
+        }
+
+        #experience .section-container {
+            border-color: var(--burgundy);
+            box-shadow: 0 0 60px var(--burgundy);
+        }
+
+        #education .section-container {
+            border-color: var(--blue);
+            box-shadow: 0 0 60px var(--blue);
+        }
+
+        #projects .section-container {
+            border-color: var(--green);
+            box-shadow: 0 0 60px var(--green);
+        }
+
+        #skills .section-container {
+            border-color: var(--yellow);
+            box-shadow: 0 0 60px var(--yellow);
+        }
+
+        #contact .section-container {
+            border-color: var(--pink);
+            box-shadow: 0 0 60px var(--pink);
+        }
+
+        .section-title {
+            font-family: 'Audiowide', cursive;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Experience Items */
+        .experience-box {
+            background: linear-gradient(135deg, rgba(139, 0, 54, 0.15), rgba(212, 93, 157, 0.15));
+            border: 2px solid var(--pink);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+            border-left-width: 8px;
+        }
+
+        .experience-box:hover {
+            transform: translateX(-20px);
+            box-shadow: 0 0 40px var(--pink);
+            border-left-color: var(--yellow);
+        }
+
+        .experience-box h3 {
+            font-size: 1.5rem;
+            color: var(--orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-box h4 {
+            color: var(--yellow);
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .experience-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .experience-box ul li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .experience-box ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-size: 1.5rem;
+        }
+
+        /* Education Grid */
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .edu-card {
+            background: linear-gradient(135deg, rgba(137, 182, 198, 0.2), rgba(74, 174, 78, 0.2));
+            border: 3px solid var(--blue);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            border-top-width: 8px;
+        }
+
+        .edu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px var(--blue);
+        }
+
+        .edu-card h3 {
+            color: var(--orange);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .edu-date {
+            display: inline-block;
+            background: var(--burgundy);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--yellow);
+        }
+
+        .edu-card h4 {
+            color: var(--yellow);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-box {
+            background: rgba(74, 174, 78, 0.1);
+            border: 3px solid var(--green);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            border-bottom-width: 8px;
+        }
+
+        .project-box:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 0 50px var(--green);
+        }
+
+        .project-box h3 {
+            color: var(--yellow);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-tag {
+            background: var(--burgundy);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--orange);
+        }
+
+        .project-link {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--green);
+            border: 2px solid var(--yellow);
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            margin-right: 1rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .project-link:hover {
+            background: var(--yellow);
+            color: black;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--yellow);
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-box {
+            background: rgba(244, 220, 122, 0.1);
+            border: 3px solid var(--yellow);
+            border-radius: 20px;
+            padding: 2rem;
+            border-left-width: 8px;
+        }
+
+        .skill-box h3 {
+            color: var(--orange);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, var(--pink), var(--burgundy));
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            border: 2px solid var(--yellow);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--pink);
+        }
+
+        /* Contact */
+        #contact {
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-item i {
+            font-size: 3rem;
+            color: var(--orange);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .contact-item a {
+            color: var(--yellow);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: var(--pink);
+            text-shadow: 0 0 20px var(--pink);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 4px solid var(--orange);
+            box-shadow: 0 -10px 50px rgba(232, 117, 17, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links a {
+            color: var(--yellow);
+            font-size: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--pink);
+            transform: translateY(-5px) scale(1.2);
+            filter: drop-shadow(0 0 20px var(--pink));
+        }
+
+        /* Scan lines effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            #dvd-menu {
+                display: none;
+            }
+
+            #mobile-menu-toggle {
+                display: flex;
+            }
+
+            #dvd-menu.mobile-active {
+                display: flex;
+                right: 50%;
+                transform: translate(50%, -50%);
+                background: rgba(0, 0, 0, 0.95);
+                padding: 2rem;
+                border-radius: 20px;
+                border: 3px solid var(--orange);
+            }
+
+            #hero {
+                padding-left: 5%;
+                text-align: center;
+                align-items: center;
+            }
+
+            #hero h1 {
+                font-size: 3rem;
+            }
+
+            #hero h2 {
+                font-size: 1.5rem;
+            }
+
+            .menu-item {
+                font-size: 1.2rem;
+                padding: 1rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- VIDEO BACKGROUND CONTAINER -->
+    <div id="video-background">
+
+        <video autoplay muted loop playsinline>
+            <source src="videoplayback.mp4" type="video/mp4">
+        </video>
+        
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <div id="mobile-menu-toggle">
+        <i class="fa fa-bars"></i>
+    </div>
+
+    <!-- DVD Menu Navigation -->
+    <nav id="dvd-menu">
+        <a href="#about" class="menu-item">ABOUT</a>
+        <a href="#experience" class="menu-item">EXPERIENCE</a>
+        <a href="#education" class="menu-item">EDUCATION</a>
+        <a href="#projects" class="menu-item">PROJECTS</a>
+        <a href="#skills" class="menu-item">SKILLS</a>
+        <a href="#contact" class="menu-item">CONTACT</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="logo-container">
+            <h1>MARCO LEONARDI</h1>
+        </div>
+        <a href="https://drive.usercontent.google.com/u/0/uc?id=1nIjZxC3yjpX_oanrbJ6gtaZeiNtZxD-p&export=download" class="dvd-button">
+            ↓ DOWNLOAD CV
+        </a>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="section-container">
+            <h2 class="section-title" style="color: var(--orange);">ABOUT</h2>
+            <p style="font-size: 1.2rem; line-height: 2; text-align: center; margin-bottom: 1.5rem;">
+                MSc <span style="color: var(--orange);">Astronomy and Business</span> student at <span style="color: var(--pink);">Leiden University</span>
+            </p>
+            <p style="font-size: 1.1rem; line-height: 2; color: var(--yellow);">
+                Combining computational astrophysics with strategic business thinking. Researching galaxy rotation curves 
+                and contributing to the <span style="color: var(--green);">Synthesizer project</span>. Specializing in transforming 
+                complex scientific data into actionable insights for the space sector.
+            </p>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience">
+        <div class="section-container">
+            <h2 class="section-title" style="color: var(--burgundy);">EXPERIENCE</h2>
+            
+            <div class="experience-box">
+                <h3>Teaching Assistant</h3>
+                <h4>Leiden University • Sep 2025 - Present</h4>
+                <ul>
+                    <li>Building "Exploring the Universe" course for non-physics bachelor students</li>
+                    <li>Covering lectures and problem sets for general astronomy</li>
+                </ul>
+            </div>
+
+            <div class="experience-box">
+                <h3>Research: The Galactic Waltz</h3>
+                <h4>Leiden University • Sep 2024 - Aug 2025</h4>
+                <ul>
+                    <li>Contributed (C/C++) to the Synthesizer project for transforming theoretical galaxy models</li>
+                    <li>Forward modelling of simulated rotation curves from EAGLE simulations dataset</li>
+                </ul>
+            </div>
+
+            <div class="experience-box">
+                <h3>Sales and After-Sales</h3>
+                <h4>iSi GmbH • Jul 2019 - Dec 2019</h4>
+                <ul>
+                    <li>Managed sales for UK customers and Italian market</li>
+                    <li>Redesigned quotations and discount system</li>
+                    <li>Analyzed European market expansion possibilities</li>
+                </ul>
+            </div>
+
+            <div class="experience-box">
+                <h3>Communication & SEO</h3>
+                <h4>AWM Network • Jan 2018 - Jun 2018</h4>
+                <ul>
+                    <li>Created SEO targeted content in HTML and CSS</li>
+                    <li>Conducted SEO and backlink analysis</li>
+                    <li>Email marketing and mass outreach campaigns</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education">
+        <div class="section-container">
+            <h2 class="section-title" style="color: var(--blue);">EDUCATION</h2>
+            <div class="education-grid">
+                <div class="edu-card">
+                    <h3>University of Leiden</h3>
+                    <span class="edu-date">Aug 2024 - Present</span>
+                    <h4>MSc Astronomy and Business Studies</h4>
+                    <p>Thesis: Bridging observed and simulated galaxy rotation curves</p>
+                </div>
+
+                <div class="edu-card">
+                    <h3>University of Bologna</h3>
+                    <span class="edu-date">Sep 2020 - Jul 2024</span>
+                    <h4>BSc Astronomy</h4>
+                    <p>Thesis: Bremsstrahlung emission in galaxy clusters</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Exchange: Aix-Marseille University, France</p>
+                </div>
+
+                <div class="edu-card">
+                    <h3>Copenhagen Business Academy</h3>
+                    <span class="edu-date">Aug 2016 - Jan 2020</span>
+                    <h4>BA International Sales & Marketing</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="section-container">
+            <h2 class="section-title" style="color: var(--green);">PROJECTS</h2>
+            <div class="projects-grid">
+                
+                <div class="project-box">
+                    <h3>🌌 Synthesizer</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">C/C++</span>
+                        <span class="project-tag">EAGLE</span>
+                    </div>
+                    <p>Forward modelling and analysis of simulated galaxy rotation curves from EAGLE simulations.</p>
+                    <a href="https://github.com/synthesizer-project/synthesizer" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                </div>
+
+                <div class="project-box">
+                    <h3>🪐 Exoplanet Light Curve</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">GUI</span>
+                        <span class="project-tag">Analysis</span>
+                    </div>
+                    <p>Interactive lightkurve analysis tool with exoplanet surface temperature simulator.</p>
+                    <a href="https://github.com/marcoleonardi97/exoplanet_finder" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                </div>
+
+                <div class="project-box">
+                    <h3>🕊️ Flocking Behaviour</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Active Matter</span>
+                    </div>
+                    <p>Interactive boids simulation by Craig Reynolds (1986)</p>
+                    <a href="https://github.com/marcoleonardi97/flocking" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                    <a href="https://marcoleonardi97.github.io/flocking/" class="project-link" target="_blank">
+                        <i class="fas fa-play"></i> RUN
+                    </a>
+                </div>
+
+                <div class="project-box">
+                    <h3>💥 Supernovae Binary Systems</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">AMUSE</span>
+                        <span class="project-tag">Python</span>
+                    </div>
+                    <p>Simulated supernovae effects on protoplanetary disks using AMUSE framework.</p>
+                    <a href="https://github.com/marcoleonardi97/supernova_on_circumstellar_disk" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                </div>
+
+                <div class="project-box">
+                    <h3>💫 Galaxy Collisions</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">R</span>
+                    </div>
+                    <p>Ballistic collisions of dwarf galaxy on milky-way size galaxy.</p>
+                    <a href="https://github.com/marcoleonardi97/galaxy_ballistic_collision" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                </div>
+
+                <div class="project-box">
+                    <h3>🔥 Plasma Cooling</h3>
+                    <div class="project-tags">
+                        <span class="project-tag">Fortran90</span>
+                        <span class="project-tag">Physics</span>
+                    </div>
+                    <p>Radiative cooling simulation of collisional H-He plasma.</p>
+                    <a href="https://github.com/marcoleonardi97/radiativecooling" class="project-link" target="_blank">
+                        <i class="fab fa-github"></i> CODE
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="section-container">
+            <h2 class="section-title" style="color: var(--yellow);">SKILLS</h2>
+            <div class="skills-grid">
+                <div class="skill-box">
+                    <h3>💻 PROGRAMMING</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">C/C++</span>
+                        <span class="skill-tag">Fortran90</span>
+                        <span class="skill-tag">R</span>
+                        <span class="skill-tag">LaTeX</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">GitHub</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <h3>🛸 ASTROPHYSICS</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AMUSE</span>
+                        <span class="skill-tag">Synthesizer</span>
+                        <span class="skill-tag">TOPCAT</span>
+                        <span class="skill-tag">Simulations</span>
+                        <span class="skill-tag">Data Analysis</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <h3>📊 BUSINESS</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Market Analysis</span>
+                        <span class="skill-tag">Marketing</span>
+                        <span class="skill-tag">Financial</span>
+                        <span class="skill-tag">SEO</span
+                        <span class="skill-tag">Excel</span>
+                    </div>
+                </div>
+
+                <div class="skill-box">
+                    <h3>🌍 LANGUAGES</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Italian</span>
+                        <span class="skill-tag">English</span>
+                        <span class="skill-tag">Spanish</span>
+                        <span class="skill-tag">French</span>
+                        <span class="skill-tag">Portuguese</span>
+                        <span class="skill-tag">Danish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="section-container">
+            <h2 class="section-title chrome-text" style="color: var(--burgundy);">CONTACT.txt</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--yellow);">
+                🚀 Looking for 6-month internship in the space sector in Europe 🚀
+            </p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:leonardi@strw.leidenuniv.nl">leonardi@strw.leidenuniv.nl</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span style="color: var(--yellow);">Leiden, Netherlands</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="https://github.com/marcoleonardi97" target="_blank" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/marco-leonardi13/" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://orcid.org/0009-0008-3592-7830" target="_blank" aria-label="ORCID">
+                <i class="fab fa-orcid"></i>
+            </a>
+        </div>
+        <p class="copyright" style="color: var(--text-muted);">
+            © <span id="current-year">2025</span> MARCO LEONARDI • ALL RIGHTS RESERVED
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Update copyright year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Add random color cycling effect to chrome text
+        const chromeTexts = document.querySelectorAll('.chrome-text');
+        setInterval(() => {
+            chromeTexts.forEach(text => {
+                const random = Math.random();
+                if (random > 0.98) {
+                    text.style.filter = 'drop-shadow(0 0 20px var(--pink)) hue-rotate(30deg)';
+                    setTimeout(() => {
+                        text.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
+                    }, 200);
+                }
+            });
+        }, 100);
+
+        // Menu highlight on scroll
+        const sections = document.querySelectorAll('section');
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            menuItems.forEach(item => {
+                item.style.borderLeftColor = 'transparent';
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.style.borderLeftColor = 'var(--pink)';
+                    item.style.background = 'linear-gradient(90deg, rgba(212, 93, 157, 0.3), transparent)';
+                } else {
+                    item.style.background = 'transparent';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
