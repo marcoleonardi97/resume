@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marco Leonardi | Y2K Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Audiowide&display=swap" rel="stylesheet">
+    <title>Marco Leonardi | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -23,13 +23,13 @@
         }
 
         body {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Inter', sans-serif;
             color: white;
             overflow-x: hidden;
             background: black;
         }
 
-        /* VIDEO BACKGROUND CONTAINER - PUT YOUR VIDEO HERE */
+        /* VIDEO BACKGROUND CONTAINER */
         #video-background {
             position: fixed;
             top: 0;
@@ -78,9 +78,8 @@
             color: var(--blue);
             text-decoration: none;
             text-align: right;
-            font-family: 'Audiowide', cursive;
+            font-family: 'Space Grotesk', sans-serif;
             letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
             border-right: 5px solid var(--orange);
             position: relative;
         }
@@ -150,27 +149,19 @@
         }
 
         #hero h1 {
-            font-family: 'Audiowide', cursive;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 5rem;
             margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--orange), var(--pink), var(--yellow));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 40px rgba(232, 117, 17, 0.5);
-            animation: pulse 3s infinite;
         }
 
         #hero h2 {
             font-size: 2rem;
             color: var(--blue);
             margin-bottom: 3rem;
-            text-shadow: 0 0 20px var(--blue);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.02); filter: brightness(1.2); }
         }
 
         .dvd-button {
@@ -179,19 +170,19 @@
             border: 3px solid var(--yellow);
             border-radius: 50px;
             color: white;
-            font-family: 'Audiowide', cursive;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.3rem;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 0 30px var(--orange), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(232, 117, 17, 0.5);
             transition: all 0.3s;
             letter-spacing: 2px;
         }
 
         .dvd-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 50px var(--yellow);
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(244, 220, 122, 0.6);
             border-color: var(--orange);
         }
 
@@ -212,41 +203,41 @@
             border: 4px solid;
             border-radius: 30px;
             padding: 3rem;
-            box-shadow: 0 0 60px;
+            box-shadow: 0 0 40px;
         }
 
         #about .section-container {
             border-color: var(--orange);
-            box-shadow: 0 0 60px var(--orange);
+            box-shadow: 0 0 40px rgba(232, 117, 17, 0.3);
         }
 
         #experience .section-container {
             border-color: var(--burgundy);
-            box-shadow: 0 0 60px var(--burgundy);
+            box-shadow: 0 0 40px rgba(139, 0, 54, 0.3);
         }
 
         #education .section-container {
             border-color: var(--blue);
-            box-shadow: 0 0 60px var(--blue);
+            box-shadow: 0 0 40px rgba(137, 182, 198, 0.3);
         }
 
         #projects .section-container {
             border-color: var(--green);
-            box-shadow: 0 0 60px var(--green);
+            box-shadow: 0 0 40px rgba(74, 174, 78, 0.3);
         }
 
         #skills .section-container {
             border-color: var(--yellow);
-            box-shadow: 0 0 60px var(--yellow);
+            box-shadow: 0 0 40px rgba(244, 220, 122, 0.3);
         }
 
         #contact .section-container {
             border-color: var(--pink);
-            box-shadow: 0 0 60px var(--pink);
+            box-shadow: 0 0 40px rgba(212, 93, 157, 0.3);
         }
 
         .section-title {
-            font-family: 'Audiowide', cursive;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 3rem;
             text-align: center;
             margin-bottom: 3rem;
@@ -267,7 +258,7 @@
 
         .experience-box:hover {
             transform: translateX(-20px);
-            box-shadow: 0 0 40px var(--pink);
+            box-shadow: 0 0 30px rgba(212, 93, 157, 0.4);
             border-left-color: var(--yellow);
         }
 
@@ -322,7 +313,7 @@
 
         .edu-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 0 40px var(--blue);
+            box-shadow: 0 0 30px rgba(137, 182, 198, 0.4);
         }
 
         .edu-card h3 {
@@ -365,7 +356,7 @@
 
         .project-box:hover {
             transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 0 50px var(--green);
+            box-shadow: 0 0 40px rgba(74, 174, 78, 0.4);
         }
 
         .project-box h3 {
@@ -407,7 +398,6 @@
             background: var(--yellow);
             color: black;
             transform: scale(1.1);
-            box-shadow: 0 0 20px var(--yellow);
         }
 
         /* Skills Grid */
@@ -447,8 +437,7 @@
         }
 
         .skill-tag:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px var(--pink);
+            transform: scale(1.05);
         }
 
         /* Contact */
@@ -474,12 +463,6 @@
         .contact-item i {
             font-size: 3rem;
             color: var(--orange);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
         }
 
         .contact-item a {
@@ -491,7 +474,6 @@
 
         .contact-item a:hover {
             color: var(--pink);
-            text-shadow: 0 0 20px var(--pink);
         }
 
         /* Footer */
@@ -500,7 +482,6 @@
             padding: 3rem 2rem;
             text-align: center;
             border-top: 4px solid var(--orange);
-            box-shadow: 0 -10px 50px rgba(232, 117, 17, 0.3);
         }
 
         .social-links {
@@ -519,26 +500,6 @@
         .social-links a:hover {
             color: var(--pink);
             transform: translateY(-5px) scale(1.2);
-            filter: drop-shadow(0 0 20px var(--pink));
-        }
-
-        /* Scan lines effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1000;
         }
 
         /* Responsive */
@@ -595,11 +556,9 @@
 <body>
     <!-- VIDEO BACKGROUND CONTAINER -->
     <div id="video-background">
-
         <video autoplay muted loop playsinline>
             <source src="videoplayback.mp4" type="video/mp4">
         </video>
-        
     </div>
 
     <!-- Mobile Menu Toggle -->
@@ -619,9 +578,6 @@
 
     <!-- Hero Section -->
     <section id="hero">
-        <div class="logo-container">
-            <h1 style="opacity: 0.45;">MARCO LEONARDI</h1>
-        </div>
         <a href="https://drive.usercontent.google.com/u/0/uc?id=1nIjZxC3yjpX_oanrbJ6gtaZeiNtZxD-p&export=download" class="dvd-button">
             ↓ DOWNLOAD CV
         </a>
@@ -838,7 +794,7 @@
                         <span class="skill-tag">Market Analysis</span>
                         <span class="skill-tag">Marketing</span>
                         <span class="skill-tag">Financial</span>
-                        <span class="skill-tag">SEO</span
+                        <span class="skill-tag">SEO</span>
                         <span class="skill-tag">Excel</span>
                     </div>
                 </div>
@@ -861,7 +817,7 @@
     <!-- Contact Section -->
     <section id="contact">
         <div class="section-container">
-            <h2 class="section-title chrome-text" style="color: var(--burgundy);">CONTACT.txt</h2>
+            <h2 class="section-title" style="color: var(--burgundy);">CONTACT</h2>
             <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--yellow);">
                 🚀 Looking for 6-month internship in the space sector in Europe 🚀
             </p>
@@ -891,12 +847,20 @@
                 <i class="fab fa-orcid"></i>
             </a>
         </div>
-        <p class="copyright" style="color: var(--text-muted);">
+        <p class="copyright" style="color: #6B7280;">
             © <span id="current-year">2025</span> MARCO LEONARDI • ALL RIGHTS RESERVED
         </p>
     </footer>
 
     <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobile-menu-toggle');
+        const dvdMenu = document.getElementById('dvd-menu');
+        
+        mobileToggle.addEventListener('click', () => {
+            dvdMenu.classList.toggle('mobile-active');
+        });
+
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -904,26 +868,13 @@
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    dvdMenu.classList.remove('mobile-active');
                 }
             });
         });
 
         // Update copyright year
         document.getElementById('current-year').textContent = new Date().getFullYear();
-
-        // Add random color cycling effect to chrome text
-        const chromeTexts = document.querySelectorAll('.chrome-text');
-        setInterval(() => {
-            chromeTexts.forEach(text => {
-                const random = Math.random();
-                if (random > 0.98) {
-                    text.style.filter = 'drop-shadow(0 0 20px var(--pink)) hue-rotate(30deg)';
-                    setTimeout(() => {
-                        text.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))';
-                    }, 200);
-                }
-            });
-        }, 100);
 
         // Menu highlight on scroll
         const sections = document.querySelectorAll('section');
@@ -940,12 +891,9 @@
             });
 
             menuItems.forEach(item => {
-                item.style.borderLeftColor = 'transparent';
+                item.classList.remove('active');
                 if (item.getAttribute('href') === `#${current}`) {
-                    item.style.borderLeftColor = 'var(--pink)';
-                    item.style.background = 'linear-gradient(90deg, rgba(212, 93, 157, 0.3), transparent)';
-                } else {
-                    item.style.background = 'transparent';
+                    item.classList.add('active');
                 }
             });
         });
