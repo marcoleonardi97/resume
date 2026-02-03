@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marco Leonardi | Constellation</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👋🏼</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c9d1d9;
+            --secondary: #8b949e;
+            --accent: #e6edf3;
+            --bg-dark: #0d1117;
+            --bg-darker: #010409;
+            --text-light: #e6edf3;
+            --text-muted: #7d8590;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg-darker);
+            color: var(--text-light);
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        body.dragging {
+            cursor: grabbing;
+        }
+
+        #constellation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #constellation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* UI Overlay */
+        #ui-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Header */
+        #header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            text-align: center;
+            pointer-events: auto;
+            background: linear-gradient(to bottom, rgba(13, 17, 23, 0.9), transparent);
+        }
+
+        #header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #c9d1d9, #8b949e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(201, 209, 217, 0.3);
+        }
+
+        #header .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.8rem;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 209, 217, 0.3);
+            border-radius: 25px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-family: 'Cormorant Garamond', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(201, 209, 217, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(201, 209, 217, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Controls */
+        #controls {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: auto;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 209, 217, 0.3);
+            border-radius: 50%;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(201, 209, 217, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(201, 209, 217, 0.3);
+        }
+
+        /* Detail Panel */
+        #detail-panel {
+            position: absolute;
+            top: 50%;
+            right: 2rem;
+            transform: translateY(-50%) translateX(500px);
+            width: 450px;
+            max-height: 80vh;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(201, 209, 217, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            pointer-events: auto;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(201, 209, 217, 0.2);
+        }
+
+        #detail-panel.active {
+            transform: translateY(-50%) translateX(0);
+        }
+
+        #detail-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #detail-panel::-webkit-scrollbar-track {
+            background: rgba(201, 209, 217, 0.1);
+            border-radius: 4px;
+        }
+
+        #detail-panel::-webkit-scrollbar-thumb {
+            background: rgba(201, 209, 217, 0.3);
+            border-radius: 4px;
+        }
+
+        .panel-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .panel-close:hover {
+            color: var(--primary);
+        }
+
+        .panel-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .panel-category {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .panel-content p {
+            margin-bottom: 1rem;
+        }
+
+        .panel-content ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-content ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .panel-content ul li::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .panel-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .panel-tag {
+            background: rgba(201, 209, 217, 0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(201, 209, 217, 0.25);
+        }
+
+        .panel-links {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .panel-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            border-radius: 25px;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .panel-link:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(138, 180, 248, 0.5);
+        }
+
+        /* Instructions */
+        #instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        #instructions.hidden {
+            opacity: 0;
+        }
+
+        .instruction-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(201, 209, 217, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        .instruction-subtext {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Constellation Labels */
+        .constellation-label {
+            position: absolute;
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--text-light);
+            text-shadow: 0 0 15px currentColor;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        /* Loading */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-darker);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(138, 180, 248, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            #header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            #detail-panel {
+                width: calc(100% - 2rem);
+                right: 1rem;
+                max-height: 70vh;
+            }
+
+            #controls {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="constellation-container">
+        <canvas id="constellation-canvas"></canvas>
+    </div>
+
+    <div id="ui-overlay">
+        <div id="header">
+            <h1>MARCO LEONARDI</h1>
+            <div class="subtitle">Astrophysics & Business • The Cosmic Explorer</div>
+            <div class="nav-buttons">
+                <a href="PUT_YOUR_PDF_LINK_HERE" class="nav-btn" download>
+                    <span>📄</span> Download CV
+                </a>
+                <a href="PUT_YOUR_GITHUB_PAGES_LINK_HERE" class="nav-btn">
+                    <span>📋</span> Classic Resume
+                </a>
+            </div>
+        </div>
+
+        <div id="instructions">
+            <div class="instruction-text">Explore the Constellations</div>
+            <div class="instruction-subtext">Click stars to reveal knowledge • Drag to navigate • Scroll to zoom</div>
+        </div>
+
+
+
+        <div id="controls">
+            <button class="control-btn" id="zoom-in" title="Zoom In">+</button>
+            <button class="control-btn" id="zoom-out" title="Zoom Out">−</button>
+            <button class="control-btn" id="reset" title="Reset View">⟲</button>
+        </div>
+
+        <div id="detail-panel">
+            <button class="panel-close">×</button>
+            <div class="panel-title"></div>
+            <div class="panel-category"></div>
+            <div class="panel-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Constellation data structure
+        const constellationData = {
+            center: {
+                name: "Marco Leonardi",
+                x: 0,
+                y: 0,
+                size: 25,
+                color: "#d29922",
+                type: "center",
+                category: "Core",
+                description: "MSc Astronomy and Business student at Leiden University, combining astrophysics research with strategic business thinking. Currently researching galaxy rotation curves and contributing to the Synthesizer project.",
+                details: {
+                    location: "Leiden, Netherlands",
+                    email: "leonardi@strw.leidenuniv.nl",
+                    seeking: "6-month internship in European space sector"
+                }
+            },
+            
+            constellations: {
+                programming: {
+                    name: "Programming",
+                    color: "#58a6ff",
+                    centerX: -390,
+                    centerY: -225,
+                    stars: [
+                        { name: "Python", size: 15, angle: 0, distance: 80, description: "Expert-level proficiency in Python for scientific computing, data analysis, and simulation. Used extensively in galaxy simulations, exoplanet analysis, and computational astrophysics projects.", mastery: "Advanced" },
+                        { name: "C/C++", size: 12, angle: 60, distance: 100, description: "Contributed production C/C++ code to the Synthesizer project, an open-source package used by researchers globally for modeling galaxy observations.", mastery: "Proficient" },
+                        { name: "Fortran90", size: 9, angle: 120, distance: 90, description: "Developed radiative cooling simulations for collisional H-He plasma. Specialized in high-performance scientific computing.", mastery: "Intermediate" },
+                        { name: "R", size: 9, angle: 180, distance: 95, description: "Statistical analysis and data visualization for cosmological simulations and galaxy collision studies.", mastery: "Intermediate" },
+                        { name: "LaTeX", size: 8, angle: 240, distance: 85, description: "Professional scientific typesetting for research papers, presentations, and technical documentation.", mastery: "Proficient" },
+                        { name: "Bash", size: 8, angle: 280, distance: 75, description: "Shell scripting for automation, data pipeline management, and HPC cluster operations.", mastery: "Intermediate" },
+                        { name: "GitHub", size: 9, angle: 320, distance: 90, description: "Version control and collaborative development. Active contributor to open-source astrophysics projects.", mastery: "Proficient" }
+                    ]
+                },
+                
+                astrophysics: {
+                    name: "Astrophysics",
+                    color: "#a371f7",
+                    centerX: 450,
+                    centerY: 0,
+                    stars: [
+                        { name: "AMUSE", size: 12, angle: 0, distance: 90, description: "Astrophysical Multipurpose Software Environment for N-body simulations, supernovae modeling, and galaxy collision dynamics.", mastery: "Advanced" },
+                        { name: "Synthesizer", size: 13, angle: 50, distance: 100, description: "Core contributor to the Synthesizer project. Developed C/C++ modules for forward modeling galaxy rotation curves from EAGLE simulations.", mastery: "Advanced" },
+                        { name: "TOPCAT", size: 9, angle: 110, distance: 85, description: "Interactive analysis and visualization of astronomical catalogs and large datasets.", mastery: "Proficient" },
+                        { name: "Galaxy Simulations", size: 12, angle: 170, distance: 95, description: "Expertise in processing and analyzing EAGLE simulation data. Specialized in rotation curve extraction and comparison with observations.", mastery: "Advanced" },
+                        { name: "Data Analysis", size: 13, angle: 230, distance: 90, description: "Large-scale astronomical data processing, statistical analysis, and visualization. Experience with terabyte-scale datasets.", mastery: "Advanced" },
+                        { name: "EAGLE", size: 10, angle: 290, distance: 88, description: "Evolution and Assembly of GaLaxies and their Environments - cosmological hydrodynamical simulations analysis.", mastery: "Proficient" }
+                    ]
+                },
+                
+                business: {
+                    name: "Business",
+                    color: "#79c0ff",
+                    centerX: 390,
+                    centerY: 225,
+                    stars: [
+                        { name: "Market Analysis", size: 11, angle: 0, distance: 85, description: "Analyzed European market expansion opportunities for iSi GmbH. Evaluated market entry strategies across multiple countries.", mastery: "Proficient" },
+                        { name: "Sales Management", size: 11, angle: 70, distance: 90, description: "Managed complete UK customer portfolio and Italian market segment. Achieved consistent sales targets and customer satisfaction.", mastery: "Proficient" },
+                        { name: "Financial Assessment", size: 9, angle: 140, distance: 80, description: "Developed quotation systems and discount structures. Financial modeling for business expansion.", mastery: "Intermediate" },
+                        { name: "SEO & Marketing", size: 10, angle: 210, distance: 88, description: "Created SEO-targeted content for UK market. Conducted competitive analysis and backlink strategies.", mastery: "Proficient" },
+                        { name: "Excel & Spreadsheets", size: 9, angle: 280, distance: 82, description: "Advanced Excel modeling for quotation systems, sales forecasting, and market analysis.", mastery: "Advanced" }
+                    ]
+                },
+                
+                languages: {
+                    name: "Languages",
+                    color: "#56d364",
+                    centerX: -450,
+                    centerY: 0,
+                    stars: [
+                        { name: "Italian", size: 12, angle: 0, distance: 80, description: "Native speaker. Cultural fluency for international business and collaboration.", mastery: "Native" },
+                        { name: "English", size: 14, angle: 60, distance: 90, description: "Full professional proficiency. Primary language for academic research and international business.", mastery: "Fluent" },
+                        { name: "Spanish", size: 10, angle: 120, distance: 85, description: "Professional working proficiency. Enables collaboration across Southern European markets.", mastery: "Proficient" },
+                        { name: "French", size: 10, angle: 180, distance: 88, description: "Professional working proficiency. Exchange year at Aix-Marseille University.", mastery: "Proficient" },
+                        { name: "Portuguese", size: 8, angle: 240, distance: 78, description: "Conversational proficiency. Facilitates business in Portuguese-speaking markets.", mastery: "Intermediate" },
+                        { name: "Danish", size: 8, angle: 300, distance: 75, description: "Working proficiency. Acquired during business studies in Copenhagen.", mastery: "Intermediate" }
+                    ]
+                },
+                
+                experience: {
+                    name: "Experience",
+                    color: "#f0883e",
+                    centerX: -390,
+                    centerY: 225,
+                    stars: [
+                        { 
+                            name: "Teaching Assistant", 
+                            size: 11, 
+                            angle: 0, 
+                            distance: 90,
+                            description: "Leiden University • Sep 2025 - Present",
+                            details: [
+                                "Building new course 'Exploring the Universe' for non-physics bachelor students",
+                                "Covering lectures and problem sets for general astronomy",
+                                "Translating complex astrophysics concepts for diverse audiences"
+                            ]
+                        },
+                        { 
+                            name: "Galaxy Rotation Research", 
+                            size: 14, 
+                            angle: 90, 
+                            distance: 100,
+                            description: "Leiden University • Sep 2024 - Aug 2025",
+                            details: [
+                                "MSc thesis: Bridging observed and simulated galaxy rotation curves",
+                                "Contributed C/C++ code to Synthesizer project",
+                                "Forward modeling and analysis of 100+ EAGLE simulation rotation curves",
+                                "Published code used by international research community"
+                            ]
+                        },
+                        { 
+                            name: "Sales Manager", 
+                            size: 11, 
+                            angle: 180, 
+                            distance: 95,
+                            description: "iSi GmbH • Jul 2019 - Dec 2019",
+                            details: [
+                                "Managed all UK customers and Italian market segment",
+                                "Redesigned quotation and discount systems in Excel/Google Sheets",
+                                "Analyzed European market expansion opportunities",
+                                "Increased operational efficiency by 40%"
+                            ]
+                        },
+                        { 
+                            name: "SEO Specialist", 
+                            size: 10, 
+                            angle: 270, 
+                            distance: 88,
+                            description: "AWM Network • Jan 2018 - Jun 2018",
+                            details: [
+                                "Created SEO-targeted content in HTML/CSS for UK market",
+                                "Conducted competitive backlink analysis",
+                                "Email marketing campaigns with Mail-Merge and Hunter",
+                                "Improved organic search rankings by 35%"
+                            ]
+                        }
+                    ]
+                },
+                
+                education: {
+                    name: "Education",
+                    color: "#bc8cff",
+                    centerX: 0,
+                    centerY: 450,
+                    stars: [
+                        { 
+                            name: "MSc Astronomy & Business", 
+                            size: 13, 
+                            angle: 0, 
+                            distance: 95,
+                            description: "University of Leiden • Aug 2024 - Present",
+                            details: [
+                                "Combining astrophysics research with business strategy",
+                                "Thesis: Bridging the gap between observed and simulated galaxy rotation curves",
+                                "Interdisciplinary program merging science and entrepreneurship",
+                                "Expected graduation: August 2025"
+                            ]
+                        },
+                        { 
+                            name: "BSc Astronomy", 
+                            size: 12, 
+                            angle: 120, 
+                            distance: 100,
+                            description: "University of Bologna • Sep 2020 - Jul 2024",
+                            details: [
+                                "Thesis: Bremsstrahlung emission in galaxy clusters",
+                                "Exchange year at Aix-Marseille University, France (2021-22)",
+                                "Specialized in computational astrophysics and galaxy evolution",
+                                "Graduated with honors"
+                            ]
+                        },
+                        { 
+                            name: "BA Sales & Marketing", 
+                            size: 11, 
+                            angle: 240, 
+                            distance: 92,
+                            description: "Copenhagen Business Academy • Aug 2016 - Jan 2020",
+                            details: [
+                                "International Sales and Marketing Management",
+                                "Focus on European market dynamics",
+                                "Digital marketing and business strategy",
+                                "Internships in Denmark and Germany"
+                            ]
+                        }
+                    ]
+                },
+                
+                projects: {
+                    name: "Projects",
+                    color: "#ff7b72",
+                    centerX: 390,
+                    centerY: -225,
+                    stars: [
+                        { 
+                            name: "Synthesizer Project", 
+                            size: 14, 
+                            angle: 0, 
+                            distance: 110,
+                            description: "Open-source Python package for galaxy modeling",
+                            tags: ["Python", "C/C++", "EAGLE", "Simulations"],
+                            details: [
+                                "Contributed production-level C/C++ code for rotation curve analysis",
+                                "Forward modeling of 100+ simulated galaxies from EAGLE dataset",
+                                "Package used by researchers globally for observational predictions",
+                                "Bridging gap between theoretical models and real observations"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/synthesizer-project/synthesizer" }
+                            ]
+                        },
+                        { 
+                            name: "Exoplanet Finder", 
+                            size: 11, 
+                            angle: 60, 
+                            distance: 95,
+                            description: "Interactive light curve analysis tool",
+                            tags: ["Python", "GUI", "Data Analysis"],
+                            details: [
+                                "Built interactive GUI for NASA Kepler data analysis",
+                                "Exoplanet transit detection and surface temperature simulation",
+                                "Real-time visualization of light curves",
+                                "Educational tool for astronomy students"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/marcoleonardi97/exoplanet_finder" }
+                            ]
+                        },
+                        { 
+                            name: "Flocking Simulation", 
+                            size: 10, 
+                            angle: 120, 
+                            distance: 88,
+                            description: "Interactive boids simulation",
+                            tags: ["Python", "Active Matter", "Physics"],
+                            details: [
+                                "Modern implementation of Craig Reynolds' classic boids algorithm",
+                                "Interactive parameter adjustment for emergent behavior",
+                                "Real-time physics simulation with collision detection",
+                                "Demonstrates complex systems and self-organization"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/marcoleonardi97/flocking" },
+                                { text: "Live Demo", url: "https://marcoleonardi97.github.io/flocking/" }
+                            ]
+                        },
+                        { 
+                            name: "Supernova Simulation", 
+                            size: 12, 
+                            angle: 180, 
+                            distance: 100,
+                            description: "Binary system supernova effects",
+                            tags: ["AMUSE", "Python", "N-body"],
+                            details: [
+                                "Simulated supernova explosions in binary star systems",
+                                "Analyzed effects on protoplanetary disk dynamics",
+                                "Used AMUSE framework for multi-physics coupling",
+                                "Studied planet formation in extreme environments"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/marcoleonardi97/supernova_on_circumstellar_disk" }
+                            ]
+                        },
+                        { 
+                            name: "Galaxy Collisions", 
+                            size: 12, 
+                            angle: 240, 
+                            distance: 105,
+                            description: "Ballistic galaxy collision modeling",
+                            tags: ["Python", "R", "Cosmology", "AMUSE"],
+                            details: [
+                                "Simulated dwarf galaxy collisions with Milky Way-sized galaxies",
+                                "Analyzed tidal disruption and stellar stream formation",
+                                "Statistical analysis of merger outcomes",
+                                "Compared with observed galaxy interactions"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/marcoleonardi97/galaxy_ballistic_collision" }
+                            ]
+                        },
+                        { 
+                            name: "Plasma Cooling", 
+                            size: 10, 
+                            angle: 300, 
+                            distance: 90,
+                            description: "Radiative cooling simulation",
+                            tags: ["Fortran90", "Physics", "Numerical Methods"],
+                            details: [
+                                "Radiative cooling of collisional H-He plasma",
+                                "Modeled thermal evolution and energy loss mechanisms",
+                                "High-performance computing implementation",
+                                "Relevant for galaxy cluster physics"
+                            ],
+                            links: [
+                                { text: "GitHub", url: "https://github.com/marcoleonardi97/radiativecooling" }
+                            ]
+                        }
+                    ]
+                }
+            }
+        };
+
+        // Canvas setup
+        const canvas = document.getElementById('constellation-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        // Camera/viewport
+        let camera = {
+            x: 0,
+            y: 0,
+            zoom: 1,
+            targetZoom: 1
+        };
+
+        // Interaction state
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let lastMousePos = { x: 0, y: 0 };
+        let hoveredStar = null;
+        let selectedStar = null;
+
+        // Background stars for atmosphere
+        let backgroundStars = [];
+
+        // Particle system
+        let particles = [];
+
+        function init() {
+            resizeCanvas();
+            generateBackgroundStars();
+            generateParticles();
+            setupEventListeners();
+            animate();
+            
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+        }
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        function generateBackgroundStars() {
+            backgroundStars = [];
+            for (let i = 0; i < 200; i++) {
+                backgroundStars.push({
+                    x: Math.random() * width * 3 - width,
+                    y: Math.random() * height * 3 - height,
+                    size: Math.random() * 2,
+                    opacity: Math.random() * 0.5 + 0.3,
+                    twinkleSpeed: Math.random() * 0.02 + 0.01,
+                    twinklePhase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function generateParticles() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * width * 2 - width / 2,
+                    y: Math.random() * height * 2 - height / 2,
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2,
+                    size: Math.random() * 1.5 + 0.5,
+                    opacity: Math.random() * 0.3 + 0.2
+                });
+            }
+        }
+
+        function worldToScreen(worldX, worldY) {
+            return {
+                x: (worldX - camera.x) * camera.zoom + width / 2,
+                y: (worldY - camera.y) * camera.zoom + height / 2
+            };
+        }
+
+        function screenToWorld(screenX, screenY) {
+            return {
+                x: (screenX - width / 2) / camera.zoom + camera.x,
+                y: (screenY - height / 2) / camera.zoom + camera.y
+            };
+        }
+
+        function drawBackground() {
+            // Gradient background
+            const gradient = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height));
+            gradient.addColorStop(0, '#0a0e1a');
+            gradient.addColorStop(1, '#050810');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Background stars
+            backgroundStars.forEach((star, i) => {
+                const pos = worldToScreen(star.x, star.y);
+                if (pos.x < -50 || pos.x > width + 50 || pos.y < -50 || pos.y > height + 50) return;
+
+                star.twinklePhase += star.twinkleSpeed;
+                const twinkle = Math.sin(star.twinklePhase) * 0.3 + 0.7;
+                
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Particles
+            particles.forEach(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+
+                if (particle.x < -width) particle.x = width;
+                if (particle.x > width) particle.x = -width;
+                if (particle.y < -height) particle.y = height;
+                if (particle.y > height) particle.y = -height;
+
+                const pos = worldToScreen(particle.x, particle.y);
+                
+                const gradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, particle.size * 3);
+                gradient.addColorStop(0, `rgba(201, 209, 217, ${particle.opacity})`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, particle.size * 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawConstellation(constellation, centerX, centerY) {
+            const stars = constellation.stars;
+            const color = constellation.color;
+
+            // Draw connections between stars
+            ctx.strokeStyle = color + '30';
+            ctx.lineWidth = 1.5;
+            
+            stars.forEach((star, i) => {
+                const starX = centerX + Math.cos(star.angle * Math.PI / 180) * star.distance;
+                const starY = centerY + Math.sin(star.angle * Math.PI / 180) * star.distance;
+                const pos1 = worldToScreen(starX, starY);
+
+                // Connect to next star
+                const nextStar = stars[(i + 1) % stars.length];
+                const nextX = centerX + Math.cos(nextStar.angle * Math.PI / 180) * nextStar.distance;
+                const nextY = centerY + Math.sin(nextStar.angle * Math.PI / 180) * nextStar.distance;
+                const pos2 = worldToScreen(nextX, nextY);
+
+                ctx.beginPath();
+                ctx.moveTo(pos1.x, pos1.y);
+                ctx.lineTo(pos2.x, pos2.y);
+                ctx.stroke();
+
+                // Connect to center
+                const centerPos = worldToScreen(centerX, centerY);
+                ctx.beginPath();
+                ctx.moveTo(pos1.x, pos1.y);
+                ctx.lineTo(centerPos.x, centerPos.y);
+                ctx.stroke();
+            });
+
+            // Draw stars
+            stars.forEach(star => {
+                const starX = centerX + Math.cos(star.angle * Math.PI / 180) * star.distance;
+                const starY = centerY + Math.sin(star.angle * Math.PI / 180) * star.distance;
+                const pos = worldToScreen(starX, starY);
+
+                const isHovered = hoveredStar && hoveredStar.star === star;
+                const isSelected = selectedStar && selectedStar.star === star;
+                const size = star.size * camera.zoom;
+
+                // Glow effect
+                if (isHovered || isSelected) {
+                    const glowGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size * 4);
+                    glowGradient.addColorStop(0, color + '60');
+                    glowGradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = glowGradient;
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, size * 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Main star
+                const starGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size);
+                starGradient.addColorStop(0, '#ffffff');
+                starGradient.addColorStop(0.3, color);
+                starGradient.addColorStop(1, color + '80');
+                
+                ctx.fillStyle = starGradient;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pulse effect for selected
+                if (isSelected) {
+                    const pulseSize = size * (1 + Math.sin(Date.now() * 0.003) * 0.3);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, pulseSize * 1.5, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Store star position for hit detection
+                star._screenPos = pos;
+                star._constellation = constellation.name;
+                star._color = color;
+            });
+        }
+
+        function drawCenter() {
+            const center = constellationData.center;
+            const pos = worldToScreen(center.x, center.y);
+            const size = center.size * camera.zoom;
+
+            // Massive glow
+            const megaGlow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size * 8);
+            megaGlow.addColorStop(0, center.color + '40');
+            megaGlow.addColorStop(0.5, center.color + '20');
+            megaGlow.addColorStop(1, 'transparent');
+            ctx.fillStyle = megaGlow;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, size * 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Outer ring
+            const ringGradient = ctx.createRadialGradient(pos.x, pos.y, size * 2, pos.x, pos.y, size * 3);
+            ringGradient.addColorStop(0, 'transparent');
+            ringGradient.addColorStop(0.5, center.color + '60');
+            ringGradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = ringGradient;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, size * 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Main sun
+            const sunGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size);
+            sunGradient.addColorStop(0, '#ffffff');
+            sunGradient.addColorStop(0.4, center.color);
+            sunGradient.addColorStop(1, center.color + '80');
+            
+            ctx.fillStyle = sunGradient;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rotating rays
+            const rayCount = 8;
+            const rayLength = size * 2;
+            const rotation = Date.now() * 0.0005;
+            
+            ctx.strokeStyle = center.color + '40';
+            ctx.lineWidth = 3;
+            
+            for (let i = 0; i < rayCount; i++) {
+                const angle = (Math.PI * 2 * i / rayCount) + rotation;
+                const x2 = pos.x + Math.cos(angle) * rayLength;
+                const y2 = pos.y + Math.sin(angle) * rayLength;
+                
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+
+            // Store for hit detection
+            center._screenPos = pos;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            
+            drawBackground();
+            
+            // Draw center first
+            drawCenter();
+            
+            // Draw all constellations
+            Object.entries(constellationData.constellations).forEach(([key, constellation]) => {
+                drawConstellation(constellation, constellation.centerX, constellation.centerY);
+            });
+
+            // Draw constellation names
+            Object.entries(constellationData.constellations).forEach(([key, constellation]) => {
+                const pos = worldToScreen(constellation.centerX, constellation.centerY);
+                const size = 1.3 * camera.zoom;
+                
+                ctx.fillStyle = constellation.color;
+                ctx.font = `${size}rem Cinzel, serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = constellation.color;
+                ctx.shadowBlur = 15;
+                ctx.fillText(constellation.name.toUpperCase(), pos.x, pos.y);
+                ctx.shadowBlur = 0;
+            });
+        }
+
+        function checkStarHover(x, y) {
+            // Check center
+            const center = constellationData.center;
+            if (center._screenPos) {
+                const dx = x - center._screenPos.x;
+                const dy = y - center._screenPos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < center.size * camera.zoom) {
+                    return { star: center, type: 'center' };
+                }
+            }
+
+            // Check constellation stars
+            for (const [key, constellation] of Object.entries(constellationData.constellations)) {
+                for (const star of constellation.stars) {
+                    if (!star._screenPos) continue;
+                    
+                    const dx = x - star._screenPos.x;
+                    const dy = y - star._screenPos.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < star.size * camera.zoom) {
+                        return { star, constellation: constellation.name, color: constellation.color };
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        function showDetails(starData) {
+            const panel = document.getElementById('detail-panel');
+            const star = starData.star;
+            
+            panel.querySelector('.panel-title').textContent = star.name;
+            panel.querySelector('.panel-category').textContent = starData.type === 'center' ? 'CORE' : starData.constellation;
+            
+            let contentHTML = '';
+            
+            if (starData.type === 'center') {
+                contentHTML = `
+                    <p>${star.description}</p>
+                    <div class="panel-tags">
+                        <span class="panel-tag">📍 ${star.details.location}</span>
+                        <span class="panel-tag">✉️ ${star.details.email}</span>
+                    </div>
+                    <p style="margin-top: 1.5rem; color: var(--accent);">
+                        <strong>Currently seeking:</strong> ${star.details.seeking}
+                    </p>
+                `;
+            } else {
+                contentHTML = `<p>${star.description}</p>`;
+                
+                if (star.mastery) {
+                    contentHTML += `<p style="color: var(--accent); margin-top: 1rem;"><strong>Mastery Level:</strong> ${star.mastery}</p>`;
+                }
+                
+                if (star.details && star.details.length > 0) {
+                    contentHTML += '<ul>';
+                    star.details.forEach(detail => {
+                        contentHTML += `<li>${detail}</li>`;
+                    });
+                    contentHTML += '</ul>';
+                }
+                
+                if (star.tags) {
+                    contentHTML += '<div class="panel-tags">';
+                    star.tags.forEach(tag => {
+                        contentHTML += `<span class="panel-tag">${tag}</span>`;
+                    });
+                    contentHTML += '</div>';
+                }
+                
+                if (star.links) {
+                    contentHTML += '<div class="panel-links">';
+                    star.links.forEach(link => {
+                        contentHTML += `<a href="${link.url}" class="panel-link" target="_blank">${link.text} →</a>`;
+                    });
+                    contentHTML += '</div>';
+                }
+            }
+            
+            panel.querySelector('.panel-content').innerHTML = contentHTML;
+            panel.classList.add('active');
+        }
+
+        function setupEventListeners() {
+            // Mouse events
+            let dragDistance = 0;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                dragStart = { x: e.clientX, y: e.clientY };
+                dragDistance = 0;
+                document.body.classList.add('dragging');
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                lastMousePos = { x: e.clientX, y: e.clientY };
+                
+                if (isDragging) {
+                    const dx = e.clientX - dragStart.x;
+                    const dy = e.clientY - dragStart.y;
+                    dragDistance += Math.abs(dx) + Math.abs(dy);
+                    camera.x -= dx / camera.zoom;
+                    camera.y -= dy / camera.zoom;
+                    dragStart = { x: e.clientX, y: e.clientY };
+                } else {
+                    const newHover = checkStarHover(e.clientX, e.clientY);
+                    if (newHover !== hoveredStar) {
+                        hoveredStar = newHover;
+                        canvas.style.cursor = hoveredStar ? 'pointer' : 'grab';
+                    }
+                }
+            });
+
+            canvas.addEventListener('mouseup', (e) => {
+                // Hide instructions on first interaction
+                document.getElementById('instructions').classList.add('hidden');
+                
+                // Only trigger click if we didn't drag much
+                if (dragDistance < 5) {
+                    const clicked = checkStarHover(e.clientX, e.clientY);
+                    if (clicked) {
+                        selectedStar = clicked;
+                        showDetails(clicked);
+                    }
+                }
+                isDragging = false;
+                dragDistance = 0;
+                document.body.classList.remove('dragging');
+            });
+
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                camera.targetZoom = Math.max(0.3, Math.min(3, camera.targetZoom * delta));
+            });
+
+            // Touch events
+            let touchStartDist = 0;
+            
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    dragStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                } else if (e.touches.length === 2) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    touchStartDist = Math.sqrt(dx * dx + dy * dy);
+                }
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                
+                if (e.touches.length === 1 && isDragging) {
+                    const dx = e.touches[0].clientX - dragStart.x;
+                    const dy = e.touches[0].clientY - dragStart.y;
+                    camera.x -= dx / camera.zoom;
+                    camera.y -= dy / camera.zoom;
+                    dragStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                } else if (e.touches.length === 2) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const delta = dist / touchStartDist;
+                    camera.targetZoom = Math.max(0.3, Math.min(3, camera.zoom * delta));
+                    touchStartDist = dist;
+                }
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                // Hide instructions on first touch
+                document.getElementById('instructions').classList.add('hidden');
+                
+                if (e.touches.length === 0) {
+                    isDragging = false;
+                }
+            });
+
+            // Control buttons
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                camera.targetZoom = Math.min(3, camera.targetZoom * 1.3);
+            });
+
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                camera.targetZoom = Math.max(0.3, camera.targetZoom * 0.7);
+            });
+
+            document.getElementById('reset').addEventListener('click', () => {
+                camera.x = 0;
+                camera.y = 0;
+                camera.targetZoom = 1;
+            });
+
+            // Panel close
+            document.querySelector('.panel-close').addEventListener('click', () => {
+                document.getElementById('detail-panel').classList.remove('active');
+                selectedStar = null;
+            });
+
+            // Window resize
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                generateBackgroundStars();
+            });
+        }
+
+        function animate() {
+            // Smooth zoom
+            camera.zoom += (camera.targetZoom - camera.zoom) * 0.1;
+            
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
